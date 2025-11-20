@@ -17,6 +17,7 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,17 +27,50 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install marp-cli
+      - name: Install marp-cli (use npx if you prefer no install)
         run: |
-          npm ci --no-audit --no-fund || true
-          npm i -D @marp-team/marp-cli@latest
+          # We will use npx directly in the render step; this ensures the latest marp-cli is available.
+          node -v
+          npm -v
 
-      - name: Render slides.md to HTML
+      - name: Render slides.md to slides.html
         run: |
-          npx @marp-team/marp-cli slides.md -o slides.html
+          # Ensure input file exists
+          echo "pwd: $(pwd)"
+          echo "Listing repo root:"
+          ls -la
 
-      - name: Show built files (debug)
-        run: ls -la
+          if [ ! -f slides.md ]; then
+            echo "ERROR: slides.md not found in repository root!" >&2
+            exit 2
+          fi
+
+          # Render to HTML using npx (explicit version)
+          npx @marp-team/marp-cli@latest slides.md -o slides.html
+
+          echo "Render step exit code: $?"
+          echo "Generated files:"
+          ls -la slides.html || true
+
+      - name: Validate built files
+        run: |
+          echo "Confirming existence and previewing slides.html head (if present):"
+          if [ -f slides.html ]; then
+            sed -n '1,80p' slides.html
+          else
+            echo "slides.html is missing!"
+            exit 2
+          fi
+
+      - name: Prepare public folder for Pages
+        run: |
+          rm -rf public
+          mkdir public
+          # move generated file(s) into public root for Pages
+          mv slides.html public/index.html
+          cp slides.md public/ || true
+          echo "public contents:"
+          ls -la public
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -44,9 +78,7 @@ jobs:
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: |
-            slides.html
-            slides.md
+          path: public
 
       - name: Deploy to GitHub Pages
         id: deployment
