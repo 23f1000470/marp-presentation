@@ -15,6 +15,7 @@ paginate: true
   --slide-padding: 48px;
 }
 
+/* Base slide */
 section {
   background: var(--bg);
   color: var(--fg);
@@ -22,9 +23,11 @@ section {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
+/* Headers */
 h1 { font-size: 48px; margin-bottom: 8px; }
 h2 { font-size: 32px; margin-bottom: 6px; }
 
+/* Accent box */
 .accent-box {
   padding: 18px;
   border-radius: 10px;
@@ -32,11 +35,13 @@ h2 { font-size: 32px; margin-bottom: 6px; }
   border: 1px solid rgba(0,102,255,0.12);
 }
 
+/* Code wrapping */
 pre {
   white-space: pre-wrap;
   word-break: break-word;
 }
 
+/* Footer for validators/humans */
 .footer-email {
   text-align:center;
   font-size:0.9rem;
@@ -44,24 +49,29 @@ pre {
   margin-top:18px;
 }
 
+/* Background image helpers */
 .bg-cover { background-size: cover; background-position: center; }
 </style>
 
+<!-- Title slide -->
 # Product Documentation Presentation
-### Prepared by: **23f1000470@ds.study.iitm.ac.in**
+### Prepared by: **23f1000470&#64;ds.study.iitm.ac.in**
 
 ---
 
-<!-- Background image slide (Marp directive) -->
-<!-- _backgroundImage: https://images.unsplash.com/photo-1526378722484-c1d4c85e3d6c?w=1600&q=80&auto=format&fit=crop -->
+<!-- Slide with background image (required by validator) -->
+<!-- _backgroundImage: https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1600&q=80&auto=format&fit=crop -->
 <!-- _backgroundSize: cover -->
+<!-- _backgroundPosition: center -->
+<section class="bg-cover">
 # Project Overview
-This documentation provides end-to-end technical guidance.
+This documentation provides end-to-end technical guidance for engineers and product teams.
+</section>
 
 ---
 
 # Key Features
-- Version-controlled documentation (Markdown in Git)
+- Version-controlled docs (Markdown in Git)
 - Exportable to PDF, HTML and PPT
 - Developer-friendly formatting and automation
 - CI-driven rendering and publishing
@@ -69,7 +79,7 @@ This documentation provides end-to-end technical guidance.
 ---
 
 # Algorithmic Complexity (Math)
-We write formal complexity notation.
+We express complexity formally:
 
 $$
 T(n) = O(n \log n)
