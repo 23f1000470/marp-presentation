@@ -17,6 +17,8 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
 
     steps:
       - name: Checkout repository
@@ -27,49 +29,26 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install marp-cli (use npx if you prefer no install)
+      - name: Ensure slides.md exists
         run: |
-          # We will use npx directly in the render step; this ensures the latest marp-cli is available.
-          node -v
-          npm -v
-
-      - name: Render slides.md to slides.html
-        run: |
-          # Ensure input file exists
-          echo "pwd: $(pwd)"
           echo "Listing repo root:"
           ls -la
-
           if [ ! -f slides.md ]; then
             echo "ERROR: slides.md not found in repository root!" >&2
             exit 2
           fi
 
-          # Render to HTML using npx (explicit version)
+      - name: Render slides.md to HTML
+        run: |
           npx @marp-team/marp-cli@latest slides.md -o slides.html
 
-          echo "Render step exit code: $?"
-          echo "Generated files:"
-          ls -la slides.html || true
-
-      - name: Validate built files
-        run: |
-          echo "Confirming existence and previewing slides.html head (if present):"
-          if [ -f slides.html ]; then
-            sed -n '1,80p' slides.html
-          else
-            echo "slides.html is missing!"
-            exit 2
-          fi
-
-      - name: Prepare public folder for Pages
+      - name: Prepare public folder
         run: |
           rm -rf public
           mkdir public
-          # move generated file(s) into public root for Pages
           mv slides.html public/index.html
           cp slides.md public/ || true
-          echo "public contents:"
+          echo "Public contents:"
           ls -la public
 
       - name: Setup Pages
